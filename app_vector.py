@@ -22,15 +22,26 @@ chroma_client = chromadb.PersistentClient(path="chromadb_vector")
 
 collection = chroma_client.get_or_create_collection(name=collection_name)#, embedding_function= open_emb_fn)
 
-print(chroma_client.list_collections())
+#print(chroma_client.list_collections())
 
+documents = []
 
+def load_documents(path):
+    for filename in os.listdir(path):
+        with open(file=os.path.join(path,filename), mode="r", encoding="utf-8") as file:
+            documents.append(
+                {
+                    "id":filename,
+                    "text": file.read()
+                })
+       
+load_documents("./news_articles")
 
-documents = [
+"""documents = [
     {"id": "doc1", "text": "Hello, world"},
     {"id": "doc2", "text": "what is your age?"},
     {"id": "doc3", "text": "How old are you?"},
-]
+]"""
 
 for doc in documents:
     collection.upsert(
@@ -48,3 +59,4 @@ while True:
             n_results=1
         )
         print(results)
+        
